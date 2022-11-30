@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
-from singer_sdk.target_base import Target
-from singer_sdk import typing as th
+from typing import Type
 
-from target_montapacking.sinks import (
-    MontapackingSink,
-)
+from singer_sdk import typing as th
+from singer_sdk.sinks import Sink
+from singer_sdk.target_base import Target
+
+from target_montapacking.sinks import PoSink
+
+SINK_TYPES = [PoSink]
 
 
 class TargetMontapacking(Target):
@@ -15,25 +18,21 @@ class TargetMontapacking(Target):
 
     name = "target-montapacking"
     config_jsonschema = th.PropertiesList(
-        th.Property(
-            "filepath",
-            th.StringType,
-            description="The path to the target output file"
-        ),
-        th.Property(
-            "file_naming_scheme",
-            th.StringType,
-            description="The scheme with which output files will be named"
-        ),
-        th.Property(
-            "auth_token",
-            th.StringType,
-            secret=True,  # Flag config as protected.
-            description="The path to the target output file"
-        ),
+        th.Property("username", th.StringType),
+        th.Property("password", th.StringType),
+        th.Property("token", th.StringType),
     ).to_dict()
 
-    default_sink_class = MontapackingSink
+    def get_sink_class(self, stream_name: str) -> Type[Sink]:
+        """Get sink for a stream."""
+        return next(
+            (
+                sink_class
+                for sink_class in SINK_TYPES
+                if sink_class.name.lower() == stream_name.lower()
+            ),
+            None,
+        )
 
 
 if __name__ == "__main__":
