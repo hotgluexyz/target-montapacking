@@ -7,31 +7,34 @@ from hotglue_models_ecommerce.ecommerce import SalesOrder
 from target_montapacking.client import MontapackingSink
 
 
-class PoSink(MontapackingSink):
+class InboundForecastSink(MontapackingSink):
 
-    endpoint = "orders"
-    unified_schema = SalesOrder
+    endpoint = "inbound_forecast"
+    unified_schema = SalesOrder  # Using SalesOrder
     name = SalesOrder.Stream.name
     endpoint = "inboundforecast/group"
 
     def process_record(self, record: dict, context: dict) -> None:
 
         # Try to create the Po
+        line_items = self.parse_json(record.get("line_items", []))
+        delivery_date = self.convert_datetime(record.get("created_at"))
+        transaction_date = self.convert_datetime(record.get("transaction_date"))
 
         lines = [
             {
-                "DeliveryDate": record.get("created_at"),
+                "DeliveryDate": delivery_date,
                 "Sku": i.get("sku"),
                 "Quantity": i.get("quantity"),
             }
-            for i in record.get("line_items", [])
+            for i in line_items
         ]
 
         mapping = {
-            "Reference": record.get("id"),
+            "Reference": str(record.get("id")),  # enforce id to be string
             "InboundForecasts": lines,
-            # "Created": This fied is overrited by Montapacking API
-            "DeliveryDate": record.get("created_at"),
+            "Created": transaction_date,  # seems like Montapacking API ignores this field
+            "DeliveryDate": delivery_date,
         }
 
         resp = self.request_api("POST", endpoint=self.endpoint, request_data=mapping)
