@@ -20,7 +20,6 @@ class TargetMontapacking(Target):
     config_jsonschema = th.PropertiesList(
         th.Property("username", th.StringType),
         th.Property("password", th.StringType),
-        th.Property("token", th.StringType),
     ).to_dict()
 
     def get_sink_class(self, stream_name: str) -> Type[Sink]:
