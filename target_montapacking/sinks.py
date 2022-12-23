@@ -36,7 +36,7 @@ class InboundForecastSink(MontapackingSink):
             "Created": transaction_date,  # seems like Montapacking API ignores this field
             "DeliveryDate": delivery_date,
         }
-
+        self.logger.info(f"DEBUG REQUEST: Method=[POST], endpoint=[{self.endpoint}], payload=[{mapping}]")
         resp = self.request_api("POST", endpoint=self.endpoint, request_data=mapping)
 
         if "Reference already exists for another group" in resp.text:
@@ -52,6 +52,17 @@ class InboundForecastSink(MontapackingSink):
                 # Perform the update line by line
                 sku = line.get("Sku")
                 endpoint_update = f"{endpoint}/{sku}"
+                self.logger.info(f"DEBUG REQUEST: Method=[PUT], endpoint=[{endpoint}], payload=[{line}]")
                 resp = self.request_api("PUT", endpoint=endpoint, request_data=line)
 
+        return None
+
+
+class UpdateInventory(MontapackingSink):
+
+    endpoint = "update_inventory"
+    name = "UpdateInventory"
+    endpoint = "UpdateInventory"
+
+    def process_record(self, record: dict, context: dict) -> None:
         return None

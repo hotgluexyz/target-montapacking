@@ -8,9 +8,9 @@ from singer_sdk import typing as th
 from singer_sdk.sinks import Sink
 from singer_sdk.target_base import Target
 
-from target_montapacking.sinks import InboundForecastSink
+from target_montapacking.sinks import InboundForecastSink,UpdateInventory
 
-SINK_TYPES = [InboundForecastSink]
+SINK_TYPES = [InboundForecastSink,UpdateInventory]
 
 
 class TargetMontapacking(Target):
