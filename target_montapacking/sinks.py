@@ -10,8 +10,8 @@ from target_montapacking.client import MontapackingSink
 class InboundForecastSink(MontapackingSink):
 
     endpoint = "inbound_forecast"
-    unified_schema = SalesOrder  # Using SalesOrder
-    name = SalesOrder.Stream.name
+    # unified_schema = SalesOrder  # Using SalesOrder
+    name = "BuyOrders"
     endpoint = "inboundforecast/group"
 
     def process_record(self, record: dict, context: dict) -> None:
