@@ -40,21 +40,23 @@ class InboundForecastSink(MontapackingSink):
         self.logger.info(f"DEBUG REQUEST: Method=[POST], endpoint=[{self.endpoint}], payload=[{mapping}]")
         resp = self.request_api("POST", endpoint=self.endpoint, request_data=mapping)
 
-        if "Reference already exists for another group" in resp.text:
-            # if returns "Reference already exists for another group" then get the reference data
-            new_lines = mapping.get("InboundForecasts", [])
+        self.logger.info(f"DEBUG RESPONSE: {resp.text}")
 
-            endpoint = f"{self.endpoint}/{record.get('id')}"
-            order_to_update = self.get_data(endpoint=endpoint)
-            lines_to_update = order_to_update.get("InboundForecasts", [])
-            lines_to_update = {item["Sku"]: item for item in lines_to_update}
+        # if "Reference already exists for another group" in resp.text:
+        #     # if returns "Reference already exists for another group" then get the reference data
+        #     new_lines = mapping.get("InboundForecasts", [])
 
-            for line in new_lines:
-                # Perform the update line by line
-                sku = line.get("Sku")
-                endpoint_update = f"{endpoint}/{sku}"
-                self.logger.info(f"DEBUG REQUEST: Method=[PUT], endpoint=[{endpoint}], payload=[{line}]")
-                resp = self.request_api("PUT", endpoint=endpoint, request_data=line)
+        #     endpoint = f"{self.endpoint}/{record.get('id')}"
+        #     order_to_update = self.get_data(endpoint=endpoint)
+        #     lines_to_update = order_to_update.get("InboundForecasts", [])
+        #     lines_to_update = {item["Sku"]: item for item in lines_to_update}
+
+        #     for line in new_lines:
+        #         # Perform the update line by line
+        #         sku = line.get("Sku")
+        #         endpoint_update = f"{endpoint}/{sku}"
+        #         self.logger.info(f"DEBUG REQUEST: Method=[PUT], endpoint=[{endpoint}], payload=[{line}]")
+        #         resp = self.request_api("PUT", endpoint=endpoint, request_data=line)
 
         return None
 
