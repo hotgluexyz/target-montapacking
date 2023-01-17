@@ -71,6 +71,8 @@ class Rest:
         elif 400 <= response.status_code < 500:
             try:
                 msg = response.text
+                if not msg:
+                    msg = response.reason
             except:
                 msg = self.response_error_message(response)
             raise FatalAPIError(msg)
