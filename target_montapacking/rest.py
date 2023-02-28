@@ -68,6 +68,10 @@ class Rest:
                 # If reference already exists do not raise
                 # This means we need to update the record
                 return None
+            else:
+                msg = self.response_error_message(response)
+                self.logger.error(response.text)
+                raise FatalAPIError(msg)
         elif 400 <= response.status_code < 500:
             try:
                 msg = response.text
