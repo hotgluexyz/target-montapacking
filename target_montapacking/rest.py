@@ -91,6 +91,7 @@ class Rest:
         return (
             f"{response.status_code} {error_type} Error: "
             f"{response.reason} for path: {self.endpoint}"
+            f"{response.text}"
         )
 
     @staticmethod
