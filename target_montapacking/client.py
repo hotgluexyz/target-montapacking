@@ -27,7 +27,7 @@ class MontapackingSink(RecordSink, Rest):
 
     @property
     def base_url(self):
-        return "https://api.montapacking.nl/rest/v5/"
+        return "https://api-v6.monta.nl/"
 
     def url(self, endpoint=None):
         if not endpoint:
