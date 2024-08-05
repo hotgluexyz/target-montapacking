@@ -34,8 +34,6 @@ class InboundForecastSink(MontapackingSink):
             "Reference": str(record.get("id")),  # enforce id to be string
             "SupplierCode": record.get("customer_id"),
             "InboundForecasts": lines,
-            "Created": transaction_date,  # seems like Montapacking API ignores this field
-            "DeliveryDate": delivery_date,
         }
         self.logger.info(f"DEBUG REQUEST: Method=[POST], endpoint=[{self.endpoint}], payload=[{mapping}]")
         resp = self.request_api("POST", endpoint=self.endpoint, request_data=mapping)
