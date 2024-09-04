@@ -26,6 +26,7 @@ class InboundForecastSink(MontapackingSink):
                 "DeliveryDate": delivery_date,
                 "Sku": i.get("sku"),
                 "Quantity": i.get("quantity"),
+                "Batch": i.get("batch"),
             }
             for i in line_items
         ]
