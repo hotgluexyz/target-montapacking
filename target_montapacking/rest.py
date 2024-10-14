@@ -43,12 +43,24 @@ class Rest:
         headers = self.http_headers
         # headers["User-Agent"] = self.user_agents.get_random_user_agent().strip()
 
+        timeout = 60
+
+        try:
+            # By default "timeout" is going to be 60 (seconds). But I'm adding the option
+            # to set it back as "None" if "request_timeout" is in the config.
+            # If it is and it's "null", the request will have no timeout
+            if isinstance(self.config, dict) and "request_timeout" in self.config:
+                timeout = self.config.get("request_timeout")
+        except:
+            pass
+
         response = requests.request(
             method=http_method,
             url=url,
             params=params,
             headers=headers,
             json=request_data,
+            timeout=timeout,
         )
         self.validate_response(response)
         return response
